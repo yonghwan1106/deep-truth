@@ -2,21 +2,298 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-  background-color: #f8fafc;
+:root {
+  --color-cyber: #06b6d4;
+  --color-cyber-glow: rgba(6, 182, 212, 0.5);
+  --color-danger: #ef4444;
+  --color-safe: #22c55e;
 }
 
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #1a2332 #0a0f1a;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #0a0f1a;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #1a2332;
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #243044;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: #030712;
+  color: #e2e8f0;
+  min-height: 100vh;
+}
+
+/* Background Effects */
+.bg-cyber-grid {
+  background-image:
+    linear-gradient(rgba(6, 182, 212, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 182, 212, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.bg-noise {
+  position: relative;
+}
+
+.bg-noise::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.02;
+  pointer-events: none;
+}
+
+/* Glow Effects */
+.glow-cyber {
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.3), 0 0 40px rgba(6, 182, 212, 0.1);
+}
+
+.glow-cyber-strong {
+  box-shadow: 0 0 30px rgba(6, 182, 212, 0.5), 0 0 60px rgba(6, 182, 212, 0.2);
+}
+
+.glow-danger {
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3), 0 0 40px rgba(239, 68, 68, 0.1);
+}
+
+.glow-safe {
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3), 0 0 40px rgba(34, 197, 94, 0.1);
+}
+
+.text-glow-cyber {
+  text-shadow: 0 0 20px rgba(6, 182, 212, 0.5);
+}
+
+.text-glow-danger {
+  text-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+}
+
+/* Border Glow */
+.border-glow {
+  position: relative;
+}
+
+.border-glow::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(45deg, var(--color-cyber), transparent, var(--color-cyber));
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0.5;
+  animation: border-rotate 4s linear infinite;
+}
+
+@keyframes border-rotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Scan Line Effect */
+.scan-line {
+  position: relative;
+  overflow: hidden;
+}
+
+.scan-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-cyber), transparent);
+  animation: scan 2s linear infinite;
+}
+
+@keyframes scan {
+  0% { top: -2px; opacity: 0; }
+  50% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* Pulse Ring */
+.pulse-ring {
+  position: relative;
+}
+
+.pulse-ring::before,
+.pulse-ring::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--color-cyber);
+  border-radius: inherit;
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+.pulse-ring::after {
+  animation-delay: 1s;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* Components */
 @layer components {
-  .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors;
+  .btn-cyber {
+    @apply relative px-6 py-3 bg-gradient-to-r from-cyber-600 to-cyber-500 text-white font-semibold rounded-lg;
+    @apply transition-all duration-300 hover:from-cyber-500 hover:to-cyber-400;
+    @apply shadow-lg shadow-cyber-500/25 hover:shadow-cyber-500/40;
+    @apply border border-cyber-400/20;
+  }
+
+  .btn-cyber:hover {
+    transform: translateY(-2px);
+  }
+
+  .btn-outline {
+    @apply px-6 py-3 bg-transparent border border-cyber-500/50 text-cyber-400 font-semibold rounded-lg;
+    @apply transition-all duration-300 hover:bg-cyber-500/10 hover:border-cyber-400;
   }
 
   .btn-danger {
-    @apply bg-danger-500 hover:bg-danger-600 text-white font-medium py-2 px-4 rounded-lg transition-colors;
+    @apply px-6 py-3 bg-gradient-to-r from-danger-600 to-danger-500 text-white font-semibold rounded-lg;
+    @apply shadow-lg shadow-danger-500/25 hover:shadow-danger-500/40;
+    @apply transition-all duration-300;
   }
 
-  .card {
-    @apply bg-white rounded-xl shadow-sm border border-gray-100 p-6;
+  .card-dark {
+    @apply bg-dark-800/80 backdrop-blur-sm border border-dark-600/50 rounded-2xl p-6;
+    @apply transition-all duration-300;
   }
+
+  .card-dark:hover {
+    @apply border-cyber-500/30;
+  }
+
+  .card-glow {
+    @apply bg-dark-800/80 backdrop-blur-sm border border-cyber-500/30 rounded-2xl p-6;
+    box-shadow: 0 0 30px rgba(6, 182, 212, 0.1), inset 0 1px 0 rgba(6, 182, 212, 0.1);
+  }
+
+  .input-dark {
+    @apply w-full px-4 py-3 bg-dark-900/50 border border-dark-600 rounded-lg;
+    @apply text-white placeholder-gray-500;
+    @apply focus:outline-none focus:border-cyber-500 focus:ring-1 focus:ring-cyber-500/50;
+    @apply transition-all duration-300;
+  }
+
+  .select-dark {
+    @apply w-full px-4 py-3 bg-dark-900/50 border border-dark-600 rounded-lg;
+    @apply text-white;
+    @apply focus:outline-none focus:border-cyber-500 focus:ring-1 focus:ring-cyber-500/50;
+    @apply transition-all duration-300 appearance-none cursor-pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2306b6d4'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 20px;
+  }
+
+  .badge-danger {
+    @apply px-3 py-1 bg-danger-500/20 text-danger-400 text-xs font-semibold rounded-full border border-danger-500/30;
+  }
+
+  .badge-warning {
+    @apply px-3 py-1 bg-warning-500/20 text-warning-400 text-xs font-semibold rounded-full border border-warning-500/30;
+  }
+
+  .badge-safe {
+    @apply px-3 py-1 bg-safe-500/20 text-safe-400 text-xs font-semibold rounded-full border border-safe-500/30;
+  }
+}
+
+/* Progress Bar */
+.progress-bar {
+  @apply h-3 bg-dark-700 rounded-full overflow-hidden;
+}
+
+.progress-bar-fill {
+  @apply h-full rounded-full transition-all duration-500;
+  background: linear-gradient(90deg, var(--color-cyber), #22d3ee);
+}
+
+.progress-bar-danger .progress-bar-fill {
+  background: linear-gradient(90deg, #dc2626, #ef4444);
+}
+
+.progress-bar-safe .progress-bar-fill {
+  background: linear-gradient(90deg, #16a34a, #22c55e);
+}
+
+/* Waveform Animation */
+.waveform {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 40px;
+}
+
+.waveform span {
+  width: 4px;
+  background: linear-gradient(to top, var(--color-cyber), #22d3ee);
+  border-radius: 2px;
+  animation: wave 1s ease-in-out infinite;
+}
+
+.waveform span:nth-child(1) { animation-delay: 0s; }
+.waveform span:nth-child(2) { animation-delay: 0.1s; }
+.waveform span:nth-child(3) { animation-delay: 0.2s; }
+.waveform span:nth-child(4) { animation-delay: 0.3s; }
+.waveform span:nth-child(5) { animation-delay: 0.4s; }
+
+@keyframes wave {
+  0%, 100% { height: 10px; }
+  50% { height: 35px; }
+}
+
+/* Gradient Text */
+.text-gradient {
+  background: linear-gradient(135deg, #06b6d4, #22d3ee, #67e8f9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-danger {
+  background: linear-gradient(135deg, #ef4444, #f87171);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Animated Background Orbs */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.3;
+  animation: float 8s ease-in-out infinite;
+}
+
+.orb-cyber {
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.4), transparent);
+}
+
+.orb-purple {
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.3), transparent);
 }

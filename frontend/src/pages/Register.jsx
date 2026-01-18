@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { UserPlus, Mic, Trash2, CheckCircle, User } from 'lucide-react'
+import { UserPlus, Mic, Trash2, CheckCircle, User, Fingerprint, Plus } from 'lucide-react'
 
 function Register() {
   const [familyMembers, setFamilyMembers] = useState([
@@ -31,40 +31,45 @@ function Register() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">가족 성문 등록</h1>
-        <p className="text-gray-600">가족의 음성을 등록하여 성문(Voiceprint) 대조에 활용합니다</p>
+    <div className="max-w-3xl mx-auto space-y-8">
+      {/* Header */}
+      <div className="text-center">
+        <div className="inline-flex items-center gap-2 bg-cyber-500/10 border border-cyber-500/30 text-cyber-400 px-3 py-1.5 rounded-full text-xs font-mono mb-4">
+          <Fingerprint className="w-3 h-3" />
+          VOICEPRINT REGISTRATION
+        </div>
+        <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">가족 성문 등록</h1>
+        <p className="text-gray-400">가족의 음성을 등록하여 성문(Voiceprint) 대조에 활용합니다</p>
       </div>
 
       {/* Family Members List */}
       <div className="space-y-4">
         {familyMembers.map((member) => (
-          <div key={member.id} className="card flex items-center justify-between">
+          <div key={member.id} className="card-dark group hover:border-cyber-500/30 flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center">
-                <User className="w-6 h-6 text-primary-600" />
+              <div className="w-14 h-14 bg-gradient-to-br from-cyber-500/20 to-cyber-600/20 rounded-2xl flex items-center justify-center border border-cyber-500/30">
+                <User className="w-7 h-7 text-cyber-400" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900">{member.name}</h3>
-                <p className="text-sm text-gray-500">{member.relationship}</p>
+                <h3 className="font-semibold text-white text-lg">{member.name}</h3>
+                <p className="text-sm text-gray-500 font-mono">{member.relationship.toUpperCase()}</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
               {member.registered ? (
-                <div className="flex items-center gap-2 text-green-600 text-sm">
-                  <CheckCircle className="w-4 h-4" />
-                  <span>등록됨 ({member.sampleCount}개 샘플)</span>
+                <div className="flex items-center gap-2 px-4 py-2 bg-safe-500/10 rounded-lg border border-safe-500/30">
+                  <CheckCircle className="w-4 h-4 text-safe-400" />
+                  <span className="text-safe-400 text-sm font-medium">{member.sampleCount}개 샘플</span>
                 </div>
               ) : (
-                <button className="flex items-center gap-2 text-primary-600 hover:text-primary-700 text-sm font-medium">
+                <button className="flex items-center gap-2 px-4 py-2 bg-cyber-500/10 rounded-lg border border-cyber-500/30 text-cyber-400 hover:bg-cyber-500/20 transition-colors">
                   <Mic className="w-4 h-4" />
-                  음성 녹음
+                  <span className="text-sm font-medium">음성 녹음</span>
                 </button>
               )}
               <button
                 onClick={() => handleDelete(member.id)}
-                className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                className="p-2 text-gray-500 hover:text-danger-400 hover:bg-danger-500/10 rounded-lg transition-all"
               >
                 <Trash2 className="w-5 h-5" />
               </button>
@@ -75,25 +80,28 @@ function Register() {
 
       {/* Add New Member Form */}
       {showForm ? (
-        <div className="card">
-          <h3 className="font-semibold text-gray-900 mb-4">새 가족 구성원 추가</h3>
-          <div className="grid md:grid-cols-2 gap-4 mb-4">
+        <div className="card-glow">
+          <h3 className="font-semibold text-white text-lg mb-6 flex items-center gap-2">
+            <UserPlus className="w-5 h-5 text-cyber-400" />
+            새 가족 구성원 추가
+          </h3>
+          <div className="grid md:grid-cols-2 gap-4 mb-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">이름</label>
+              <label className="block text-sm font-medium text-gray-400 mb-2">이름</label>
               <input
                 type="text"
                 value={newMember.name}
                 onChange={(e) => setNewMember({ ...newMember, name: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="input-dark"
                 placeholder="예: 김민준"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">관계</label>
+              <label className="block text-sm font-medium text-gray-400 mb-2">관계</label>
               <select
                 value={newMember.relationship}
                 onChange={(e) => setNewMember({ ...newMember, relationship: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="select-dark"
               >
                 <option value="">선택하세요</option>
                 <option value="아들">아들</option>
@@ -105,12 +113,12 @@ function Register() {
             </div>
           </div>
           <div className="flex gap-3">
-            <button onClick={handleAddMember} className="btn-primary">
-              추가
+            <button onClick={handleAddMember} className="btn-cyber">
+              추가하기
             </button>
             <button
               onClick={() => setShowForm(false)}
-              className="px-4 py-2 text-gray-600 hover:text-gray-800"
+              className="px-6 py-3 text-gray-400 hover:text-white transition-colors"
             >
               취소
             </button>
@@ -119,21 +127,39 @@ function Register() {
       ) : (
         <button
           onClick={() => setShowForm(true)}
-          className="w-full card border-dashed border-2 border-gray-300 hover:border-primary-400 flex items-center justify-center gap-2 text-gray-600 hover:text-primary-600 transition-colors"
+          className="w-full card-dark border-dashed border-2 border-dark-600 hover:border-cyber-500/50 flex items-center justify-center gap-3 py-8 text-gray-400 hover:text-cyber-400 transition-all group"
         >
-          <UserPlus className="w-5 h-5" />
-          새 가족 구성원 추가
+          <div className="w-12 h-12 bg-dark-700 rounded-xl flex items-center justify-center border border-dark-600 group-hover:border-cyber-500/30 group-hover:bg-cyber-500/10 transition-all">
+            <Plus className="w-6 h-6" />
+          </div>
+          <span className="font-medium">새 가족 구성원 추가</span>
         </button>
       )}
 
       {/* Tips */}
-      <div className="card bg-blue-50 border-blue-200">
-        <h4 className="font-semibold text-blue-800 mb-2">등록 팁</h4>
-        <ul className="text-sm text-blue-700 space-y-1">
-          <li>최소 3개 이상의 음성 샘플을 등록하면 정확도가 높아집니다</li>
-          <li>조용한 환경에서 자연스러운 대화 톤으로 녹음하세요</li>
-          <li>각 샘플은 5초 이상 녹음하는 것이 좋습니다</li>
-        </ul>
+      <div className="card-dark border-cyber-500/20 bg-cyber-500/5">
+        <div className="flex items-start gap-4">
+          <div className="w-10 h-10 bg-cyber-500/20 rounded-xl flex items-center justify-center flex-shrink-0 border border-cyber-500/30">
+            <Mic className="w-5 h-5 text-cyber-400" />
+          </div>
+          <div>
+            <h4 className="font-semibold text-cyber-400 mb-2">등록 팁</h4>
+            <ul className="text-sm text-gray-400 space-y-1">
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 bg-cyber-500 rounded-full" />
+                최소 3개 이상의 음성 샘플을 등록하면 정확도가 높아집니다
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 bg-cyber-500 rounded-full" />
+                조용한 환경에서 자연스러운 대화 톤으로 녹음하세요
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 bg-cyber-500 rounded-full" />
+                각 샘플은 5초 이상 녹음하는 것이 좋습니다
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   )
