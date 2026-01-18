@@ -3,11 +3,11 @@ fastapi==0.109.0
 uvicorn[standard]==0.27.0
 python-multipart==0.0.6
 
-# Audio Processing
-librosa==0.10.1
-soundfile==0.12.1
+# Audio Processing (MVP - minimal dependencies)
 numpy==1.26.3
-scipy==1.12.0
+# librosa==0.10.1  # 프로덕션용
+# soundfile==0.12.1  # 프로덕션용
+# scipy==1.12.0  # 프로덕션용
 
 # AI/ML (for production, uncomment these)
 # torch==2.1.2
@@ -17,6 +17,7 @@ scipy==1.12.0
 
 # Utilities
 pydantic==2.5.3
+pydantic-settings==2.1.0
 python-dotenv==1.0.0
 aiofiles==23.2.1
 

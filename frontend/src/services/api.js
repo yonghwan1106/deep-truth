@@ -3,7 +3,7 @@
  * 백엔드 API 통신 모듈
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://deep-truth-production.up.railway.app/api'
 
 /**
  * API 요청 헬퍼 함수
