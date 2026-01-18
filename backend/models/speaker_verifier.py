@@ -20,8 +20,8 @@ class SpeakerVerifier:
     API 토큰이 없는 경우 목업 모드로 동작합니다.
     """
 
-    # HuggingFace Inference API 엔드포인트
-    API_BASE_URL = "https://api-inference.huggingface.co/models"
+    # HuggingFace Inference API 엔드포인트 (2024년 이후 새 URL)
+    API_BASE_URL = "https://router.huggingface.co/hf"
 
     # 화자 검증용 모델 (speaker-embedding)
     SPEAKER_MODEL = "speechbrain/spkrec-ecapa-voxceleb"
