@@ -7,7 +7,13 @@ function Home() {
       {/* Hero Section */}
       <section className="relative py-12 md:py-20">
         <div className="text-center max-w-4xl mx-auto">
-          {/* Badge */}
+          {/* Contest Badge */}
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/40 text-amber-400 px-4 py-2 rounded-full text-sm font-medium mb-4">
+            <span className="text-lg">🏆</span>
+            피싱·스캠 예방을 위한 서비스 개발 경진대회 출품작
+          </div>
+
+          {/* Tech Badge */}
           <div className="inline-flex items-center gap-2 bg-cyber-500/10 border border-cyber-500/30 text-cyber-400 px-4 py-2 rounded-full text-sm font-mono mb-8 glow-cyber">
             <span className="w-2 h-2 bg-cyber-400 rounded-full animate-pulse" />
             AI-POWERED VOICE VERIFICATION
