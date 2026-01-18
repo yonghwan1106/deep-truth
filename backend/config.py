@@ -10,6 +10,11 @@ class Settings(BaseSettings):
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = True
 
+    # HuggingFace API 설정
+    HUGGINGFACE_API_TOKEN: str = ""
+    HUGGINGFACE_DEEPFAKE_MODEL: str = "facebook/wav2vec2-base"
+    HUGGINGFACE_SPEAKER_MODEL: str = "speechbrain/spkrec-ecapa-voxceleb"
+
     # 경로 설정
     BASE_DIR: Path = Path(__file__).parent
     DATA_DIR: Path = BASE_DIR / "data"
