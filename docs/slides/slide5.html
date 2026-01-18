@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html { background: #0F172A; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #0F172A;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  color: #ffffff;
+}
+.header {
+  background: #1E293B;
+  padding: 14pt 40pt;
+  border-bottom: 2pt solid #0EA5E9;
+}
+.header h1 {
+  font-size: 20pt;
+  color: #0EA5E9;
+  margin: 0;
+}
+.content {
+  padding: 16pt 40pt;
+  flex: 1;
+  display: flex;
+  gap: 14pt;
+}
+.feature-card {
+  flex: 1;
+  background: #1E293B;
+  border-radius: 8pt;
+  padding: 14pt;
+  border: 1pt solid #334155;
+}
+.feature-card.danger { border-top: 3pt solid #EF4444; }
+.feature-card.cyan { border-top: 3pt solid #0EA5E9; }
+.feature-card.green { border-top: 3pt solid #10B981; }
+.feature-card.amber { border-top: 3pt solid #F59E0B; }
+.icon-box {
+  width: 32pt;
+  height: 32pt;
+  border-radius: 6pt;
+  margin-bottom: 10pt;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.icon-box.danger { background: rgba(239, 68, 68, 0.2); }
+.icon-box.cyan { background: rgba(14, 165, 233, 0.2); }
+.icon-box.green { background: rgba(16, 185, 129, 0.2); }
+.icon-box.amber { background: rgba(245, 158, 11, 0.2); }
+.icon-box p {
+  font-size: 14pt;
+  margin: 0;
+}
+.feature-card h3 {
+  font-size: 11pt;
+  color: #ffffff;
+  margin: 0 0 6pt 0;
+}
+.feature-card .desc {
+  font-size: 8pt;
+  color: #94A3B8;
+  margin: 0 0 10pt 0;
+  line-height: 1.4;
+}
+.tech-tag {
+  background: rgba(14, 165, 233, 0.1);
+  padding: 4pt 6pt;
+  border-radius: 4pt;
+  display: inline-block;
+}
+.tech-tag p {
+  font-size: 7pt;
+  color: #0EA5E9;
+  margin: 0;
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>주요 기능 (Key Features)</h1>
+</div>
+<div class="content">
+  <div class="feature-card danger">
+    <div class="icon-box danger"><p>!</p></div>
+    <h3>딥페이크 탐지</h3>
+    <p class="desc">Wav2Vec2 기반 AI가 음성의 스펙트럼 아티팩트를 분석하여 합성 음성 여부를 판별합니다.</p>
+    <div class="tech-tag"><p>Wav2Vec2 / HuggingFace</p></div>
+  </div>
+  <div class="feature-card cyan">
+    <div class="icon-box cyan"><p>@</p></div>
+    <h3>성문 대조</h3>
+    <p class="desc">ECAPA-TDNN 모델로 등록된 가족의 성문(Voiceprint)과 비교하여 실제 가족인지 확인합니다.</p>
+    <div class="tech-tag"><p>ECAPA-TDNN / SpeechBrain</p></div>
+  </div>
+  <div class="feature-card green">
+    <div class="icon-box green"><p>#</p></div>
+    <h3>가족 암호</h3>
+    <p class="desc">사전 약속된 암호 문구로 추가적인 본인 확인을 수행합니다. AI 분석 + 암호 확인 이중 검증.</p>
+    <div class="tech-tag"><p>이중 인증 체계</p></div>
+  </div>
+  <div class="feature-card amber">
+    <div class="icon-box amber"><p>$</p></div>
+    <h3>분석 대시보드</h3>
+    <p class="desc">분석 결과를 시각화하여 위험도 게이지, 상세 리포트, 권장 조치를 한눈에 확인할 수 있습니다.</p>
+    <div class="tech-tag"><p>React / Tailwind CSS</p></div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html { background: #0F172A; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #0F172A;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  color: #ffffff;
+}
+.header {
+  background: #1E293B;
+  padding: 20pt 40pt;
+  border-bottom: 2pt solid #0EA5E9;
+}
+.header h1 {
+  font-size: 24pt;
+  color: #0EA5E9;
+  margin: 0;
+}
+.content {
+  padding: 30pt 40pt;
+  flex: 1;
+}
+.summary-table {
+  width: 100%;
+}
+.row {
+  display: flex;
+  margin-bottom: 16pt;
+  align-items: flex-start;
+}
+.label {
+  width: 120pt;
+  background: rgba(14, 165, 233, 0.1);
+  padding: 10pt 16pt;
+  border-radius: 6pt;
+  border-left: 3pt solid #0EA5E9;
+}
+.label p {
+  font-size: 11pt;
+  color: #0EA5E9;
+  margin: 0;
+  font-weight: bold;
+}
+.value {
+  flex: 1;
+  padding: 10pt 20pt;
+}
+.value p {
+  font-size: 12pt;
+  color: #E2E8F0;
+  margin: 0;
+}
+.highlight {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1pt solid rgba(16, 185, 129, 0.3);
+  padding: 16pt 20pt;
+  border-radius: 8pt;
+  margin-top: 20pt;
+}
+.highlight p {
+  font-size: 13pt;
+  color: #10B981;
+  margin: 0;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Summary</h1>
+</div>
+<div class="content">
+  <div class="summary-table">
+    <div class="row">
+      <div class="label"><p>팀명</p></div>
+      <div class="value"><p>Deep Truth Team</p></div>
+    </div>
+    <div class="row">
+      <div class="label"><p>프로젝트명</p></div>
+      <div class="value"><p>Deep Truth (딥 트루스)</p></div>
+    </div>
+    <div class="row">
+      <div class="label"><p>세부주제</p></div>
+      <div class="value"><p>딥페이크 음성 사기 예방</p></div>
+    </div>
+    <div class="row">
+      <div class="label"><p>타겟 사용자</p></div>
+      <div class="value"><p>기업 임원, 고액 자산가, 일반 가정 (납치 빙자 사기 예방)</p></div>
+    </div>
+  </div>
+  <div class="highlight">
+    <p>AI 딥페이크 음성 탐지 + 가족 성문 대조 이중 검증 서비스</p>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html { background: #0F172A; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #0F172A;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  color: #ffffff;
+}
+.header {
+  background: #1E293B;
+  padding: 14pt 40pt;
+  border-bottom: 2pt solid #8B5CF6;
+}
+.header h1 {
+  font-size: 20pt;
+  color: #8B5CF6;
+  margin: 0;
+}
+.content {
+  padding: 16pt 40pt;
+  flex: 1;
+  display: flex;
+  gap: 20pt;
+}
+.left-col { flex: 1; }
+.right-col { flex: 1; }
+.section-title {
+  font-size: 11pt;
+  color: #8B5CF6;
+  margin: 0 0 10pt 0;
+}
+.data-item {
+  background: #1E293B;
+  padding: 8pt 12pt;
+  border-radius: 4pt;
+  margin-bottom: 6pt;
+}
+.data-item h4 {
+  font-size: 9pt;
+  color: #E2E8F0;
+  margin: 0;
+}
+.data-item p {
+  font-size: 8pt;
+  color: #64748B;
+  margin: 2pt 0 0 0;
+}
+.tech-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6pt;
+}
+.tech-badge {
+  background: rgba(139, 92, 246, 0.15);
+  border: 1pt solid rgba(139, 92, 246, 0.3);
+  padding: 4pt 8pt;
+  border-radius: 4pt;
+}
+.tech-badge p {
+  font-size: 8pt;
+  color: #A78BFA;
+  margin: 0;
+}
+.pipeline-box {
+  background: #1E293B;
+  padding: 10pt;
+  border-radius: 6pt;
+  margin-top: 10pt;
+}
+.pipeline-box h4 {
+  font-size: 9pt;
+  color: #0EA5E9;
+  margin: 0 0 8pt 0;
+}
+.pipeline-step {
+  display: flex;
+  align-items: center;
+}
+.pipeline-step p {
+  font-size: 8pt;
+  color: #94A3B8;
+  margin: 0;
+}
+.arrow-small {
+  color: #0EA5E9;
+  margin: 0 6pt;
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>데이터 및 기술 (Data and Tech)</h1>
+</div>
+<div class="content">
+  <div class="left-col">
+    <h3 class="section-title">활용 데이터셋</h3>
+    <div class="data-item">
+      <h4>ASVspoof 2019/2021</h4>
+      <p>딥페이크 탐지 모델 학습/검증</p>
+    </div>
+    <div class="data-item">
+      <h4>VoxCeleb1/2</h4>
+      <p>화자 검증 모델 학습</p>
+    </div>
+    <div class="data-item">
+      <h4>DEEP-VOICE</h4>
+      <p>음성 복제 탐지 벤치마크</p>
+    </div>
+    <div class="pipeline-box">
+      <h4>데이터 처리 파이프라인</h4>
+      <div class="pipeline-step">
+        <p>입력</p>
+        <p class="arrow-small">→</p>
+        <p>리샘플링</p>
+        <p class="arrow-small">→</p>
+        <p>특징추출</p>
+        <p class="arrow-small">→</p>
+        <p>AI분석</p>
+      </div>
+    </div>
+  </div>
+  <div class="right-col">
+    <h3 class="section-title">기술 스택</h3>
+    <div class="tech-stack">
+      <div class="tech-badge"><p>Python</p></div>
+      <div class="tech-badge"><p>FastAPI</p></div>
+      <div class="tech-badge"><p>React</p></div>
+      <div class="tech-badge"><p>Tailwind</p></div>
+      <div class="tech-badge"><p>Wav2Vec2</p></div>
+      <div class="tech-badge"><p>ECAPA-TDNN</p></div>
+      <div class="tech-badge"><p>HuggingFace</p></div>
+      <div class="tech-badge"><p>SpeechBrain</p></div>
+    </div>
+    <div class="pipeline-box" style="margin-top: 12pt;">
+      <h4>핵심 AI 모델</h4>
+      <div class="data-item" style="margin-bottom: 4pt;">
+        <h4>Wav2Vec2</h4>
+        <p>딥페이크 탐지 / 스펙트럼 분석</p>
+      </div>
+      <div class="data-item" style="margin-bottom: 0;">
+        <h4>ECAPA-TDNN</h4>
+        <p>화자 검증 / 192차원 임베딩</p>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
