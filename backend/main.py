@@ -48,7 +48,10 @@ async def root():
 @app.get("/health")
 async def health_check():
     """헬스체크 엔드포인트"""
-    return {"status": "healthy"}
+    return {
+        "status": "healthy",
+        "ai_mode": "huggingface_api" if settings.HUGGINGFACE_API_TOKEN else "mock"
+    }
 
 
 if __name__ == "__main__":

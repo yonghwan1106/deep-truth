@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html { background: #0F172A; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #0F172A;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  color: #ffffff;
+}
+.header {
+  background: #1E293B;
+  padding: 14pt 40pt;
+  border-bottom: 2pt solid #0EA5E9;
+}
+.header h1 {
+  font-size: 22pt;
+  color: #0EA5E9;
+  margin: 0;
+}
+.content {
+  padding: 16pt 40pt;
+  flex: 1;
+  display: flex;
+  gap: 20pt;
+}
+.left-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10pt;
+}
+.right-col {
+  flex: 1.2;
+}
+.info-row {
+  display: flex;
+  background: #1E293B;
+  border-radius: 4pt;
+  overflow: hidden;
+}
+.info-label {
+  background: rgba(14, 165, 233, 0.2);
+  padding: 8pt 12pt;
+  min-width: 70pt;
+  display: flex;
+  align-items: center;
+}
+.info-label p {
+  font-size: 8pt;
+  color: #0EA5E9;
+  margin: 0;
+  font-weight: bold;
+}
+.info-value {
+  padding: 8pt 12pt;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+.info-value p {
+  font-size: 9pt;
+  color: #E2E8F0;
+  margin: 0;
+}
+.highlight-box {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1pt solid rgba(16, 185, 129, 0.3);
+  border-radius: 6pt;
+  padding: 12pt;
+}
+.highlight-box h3 {
+  font-size: 10pt;
+  color: #10B981;
+  margin: 0 0 8pt 0;
+}
+.highlight-box p {
+  font-size: 10pt;
+  color: #E2E8F0;
+  margin: 0;
+  line-height: 1.4;
+}
+.target-list {
+  margin-top: 12pt;
+}
+.target-item {
+  display: flex;
+  align-items: center;
+  gap: 6pt;
+  margin-bottom: 6pt;
+}
+.target-dot {
+  width: 6pt;
+  height: 6pt;
+  background: #10B981;
+  border-radius: 50%;
+}
+.target-item p {
+  font-size: 10pt;
+  color: #94A3B8;
+  margin: 0;
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Summary</h1>
+</div>
+<div class="content">
+  <div class="left-col">
+    <div class="info-row">
+      <div class="info-label"><p>팀명</p></div>
+      <div class="info-value"><p>Deep Truth Team</p></div>
+    </div>
+    <div class="info-row">
+      <div class="info-label"><p>프로젝트명</p></div>
+      <div class="info-value"><p>Deep Truth (딥 트루스)</p></div>
+    </div>
+    <div class="info-row">
+      <div class="info-label"><p>세부주제</p></div>
+      <div class="info-value"><p>딥페이크 음성 사기 예방</p></div>
+    </div>
+    <div class="info-row">
+      <div class="info-label"><p>타겟 사용자</p></div>
+      <div class="info-value"><p>기업 임원, 고액 자산가, 일반 가정</p></div>
+    </div>
+  </div>
+  <div class="right-col">
+    <div class="highlight-box">
+      <h3>한줄 소개</h3>
+      <p>AI 딥페이크 음성 탐지 + 가족 성문 대조 이중 검증 서비스</p>
+      <div class="target-list">
+        <div class="target-item">
+          <div class="target-dot"></div>
+          <p>납치 빙자 사기 예방</p>
+        </div>
+        <div class="target-item">
+          <div class="target-dot"></div>
+          <p>CEO 사칭 사기 방지</p>
+        </div>
+        <div class="target-item">
+          <div class="target-dot"></div>
+          <p>비동기 음성 메시지 검증</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

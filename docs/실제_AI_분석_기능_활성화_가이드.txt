@@ -1,0 +1,216 @@
+================================================================================
+        실제 AI 분석 기능 활성화 및 백엔드 API 연동 가이드
+================================================================================
+
+[ 현재 상태 ]
+
+| 구분          | 현재                  | 목표                |
+|---------------|----------------------|---------------------|
+| 프론트엔드    | Vercel 배포 완료      | API 연동 필요       |
+| 백엔드        | 로컬 실행만 가능      | 클라우드 배포 필요  |
+| AI 모델       | 목업(Mock) 결과 반환  | 실제 모델 추론      |
+
+
+================================================================================
+1단계: 백엔드 AI 모델 활성화
+================================================================================
+
+[backend/requirements.txt] - AI 라이브러리 주석 해제:
+
+# AI/ML (주석 해제)
+torch==2.1.2
+torchaudio==2.1.2
+transformers==4.37.2
+speechbrain==1.0.0
+
+
+[backend/models/deepfake_detector.py] - 실제 모델 사용:
+
+class DeepfakeDetector:
+    def __init__(self, model_path=None):
+        self._prototype_mode = False  # 프로토타입 모드 비활성화
+
+    def load_model(self):
+        from transformers import Wav2Vec2ForSequenceClassification, Wav2Vec2Processor
+        self.processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-base")
+        # ASVspoof로 fine-tuned된 모델 사용
+        self.model = Wav2Vec2ForSequenceClassification.from_pretrained(
+            "your-finetuned-model"  # HuggingFace 모델 경로
+        )
+        self.is_loaded = True
+
+
+================================================================================
+2단계: 백엔드 클라우드 배포
+================================================================================
+
+[옵션 A: Railway (추천 - 무료 티어 있음)]
+
+# Railway CLI 설치
+npm install -g @railway/cli
+
+# 로그인 및 배포
+railway login
+cd backend
+railway init
+railway up
+
+
+[옵션 B: Render]
+
+1. https://render.com 접속
+2. New Web Service -> GitHub 연동
+3. Build Command: pip install -r requirements.txt
+4. Start Command: uvicorn main:app --host 0.0.0.0 --port $PORT
+
+
+[옵션 C: Google Cloud Run]
+
+# Dockerfile 작성
+FROM python:3.10-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+
+
+================================================================================
+3단계: 프론트엔드 API URL 설정
+================================================================================
+
+[Vercel 환경변수 설정]
+
+1. Vercel Dashboard -> 프로젝트 -> Settings -> Environment Variables
+2. 추가:
+   - Key: VITE_API_URL
+   - Value: https://your-backend.railway.app/api (배포된 백엔드 URL)
+
+
+[또는 .env.production 파일 생성]
+
+VITE_API_URL=https://your-backend-url.com/api
+
+
+================================================================================
+4단계: Analysis.jsx 수정 - 실제 API 호출
+================================================================================
+
+// frontend/src/pages/Analysis.jsx
+import { analysisAPI } from '../services/api'
+
+const handleAnalyze = async () => {
+  if (!file && !selectedSample) return
+
+  setAnalyzing(true)
+  setResult(null)
+
+  try {
+    if (selectedSample) {
+      // 샘플 선택 시 - 기존 목업 결과 사용
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      setResult(selectedSample.result)
+    } else if (file) {
+      // 실제 파일 업로드 시 - API 호출
+      const response = await analysisAPI.analyzeAudio(file)
+
+      // API 응답을 UI 형식으로 변환
+      setResult({
+        deepfakeProbability: response.deepfake_probability,
+        voiceprintMatch: response.voiceprint_match,
+        matchedPerson: response.matched_person,
+        riskLevel: response.risk_level,
+        recommendations: response.recommendations,
+        analysisDetails: {
+          spectralAnomaly: response.artifacts?.high_freq_anomaly * 100 || 0,
+          pitchVariation: response.artifacts?.phase_discontinuity * 100 || 0,
+          temporalConsistency: response.artifacts?.mel_spectrogram_score * 100 || 0
+        }
+      })
+    }
+  } catch (error) {
+    console.error('분석 실패:', error)
+    alert('분석 중 오류가 발생했습니다. 다시 시도해주세요.')
+  } finally {
+    setAnalyzing(false)
+  }
+}
+
+
+================================================================================
+5단계: 실제 AI 모델 Fine-tuning (선택사항)
+================================================================================
+
+[딥페이크 탐지 모델 학습]
+
+# ASVspoof 2019 데이터셋으로 Wav2Vec2 fine-tuning
+from transformers import Wav2Vec2ForSequenceClassification, Trainer
+
+model = Wav2Vec2ForSequenceClassification.from_pretrained(
+    "facebook/wav2vec2-base",
+    num_labels=2  # Real vs Fake
+)
+
+# 학습 후 HuggingFace Hub에 업로드
+model.push_to_hub("your-username/deepfake-detector-wav2vec2")
+
+
+[화자 검증 모델]
+
+# SpeechBrain ECAPA-TDNN 사용
+from speechbrain.pretrained import SpeakerRecognition
+verification = SpeakerRecognition.from_hparams(
+    source="speechbrain/spkrec-ecapa-voxceleb"
+)
+
+
+================================================================================
+아키텍처 요약
+================================================================================
+
++-------------------------------------------------------------+
+|  [프론트엔드 - Vercel]                                      |
+|   https://deep-truth.vercel.app                             |
+|   └── VITE_API_URL 환경변수로 백엔드 연결                   |
++-------------------------------------------------------------+
+|  [백엔드 - Railway/Render/GCP]                              |
+|   https://deep-truth-api.railway.app                        |
+|   ├── /api/analyze/ -> 음성 분석 (딥페이크 + 성문)          |
+|   ├── /api/voiceprint/ -> 성문 등록/조회                    |
+|   └── /api/family-code/ -> 가족 암호                        |
++-------------------------------------------------------------+
+|  [AI 모델 - HuggingFace]                                    |
+|   ├── Wav2Vec2 (딥페이크 탐지)                              |
+|   └── ECAPA-TDNN (화자 검증)                                |
++-------------------------------------------------------------+
+
+
+================================================================================
+예상 비용
+================================================================================
+
+| 서비스              | 무료 티어      | 유료       |
+|---------------------|---------------|------------|
+| Vercel (프론트)     | 충분          | -          |
+| Railway (백엔드)    | 500시간/월    | $5/월~     |
+| Render (백엔드)     | 750시간/월    | $7/월~     |
+| HuggingFace (모델)  | 무료          | -          |
+
+
+================================================================================
+주요 파일 위치
+================================================================================
+
+프론트엔드:
+- frontend/src/pages/Analysis.jsx     - 음성 분석 페이지
+- frontend/src/services/api.js        - API 통신 모듈
+
+백엔드:
+- backend/main.py                     - FastAPI 메인
+- backend/routers/analysis.py         - 분석 API 라우터
+- backend/models/deepfake_detector.py - 딥페이크 탐지 모델
+- backend/models/speaker_verifier.py  - 화자 검증 모델
+- backend/requirements.txt            - Python 의존성
+
+
+================================================================================

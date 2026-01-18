@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html { background: #0F172A; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #0F172A;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  color: #ffffff;
+}
+.header {
+  background: #1E293B;
+  padding: 14pt 40pt;
+  border-bottom: 2pt solid #10B981;
+}
+.header h1 {
+  font-size: 20pt;
+  color: #10B981;
+  margin: 0;
+}
+.content {
+  padding: 14pt 40pt;
+  flex: 1;
+}
+.architecture {
+  display: flex;
+  gap: 12pt;
+  margin-bottom: 14pt;
+}
+.arch-box {
+  flex: 1;
+  background: #1E293B;
+  border-radius: 8pt;
+  padding: 12pt;
+  border-top: 3pt solid #0EA5E9;
+}
+.arch-box.green { border-top-color: #10B981; }
+.arch-box.purple { border-top-color: #8B5CF6; }
+.arch-title {
+  display: flex;
+  align-items: center;
+  gap: 8pt;
+  margin-bottom: 10pt;
+}
+.arch-icon {
+  width: 24pt;
+  height: 24pt;
+  border-radius: 4pt;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(14, 165, 233, 0.2);
+}
+.arch-icon.green { background: rgba(16, 185, 129, 0.2); }
+.arch-icon.purple { background: rgba(139, 92, 246, 0.2); }
+.arch-icon p {
+  font-size: 12pt;
+  margin: 0;
+}
+.arch-title h3 {
+  font-size: 10pt;
+  color: #E2E8F0;
+  margin: 0;
+}
+.arch-item {
+  background: rgba(14, 165, 233, 0.1);
+  padding: 6pt 10pt;
+  border-radius: 4pt;
+  margin-bottom: 4pt;
+}
+.arch-item p {
+  font-size: 8pt;
+  color: #CBD5E1;
+  margin: 0;
+}
+.flow-section {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1pt solid rgba(16, 185, 129, 0.3);
+  padding: 12pt 16pt;
+  border-radius: 8pt;
+}
+.flow-section h3 {
+  font-size: 11pt;
+  color: #10B981;
+  margin: 0 0 12pt 0;
+}
+.flow-steps {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.step {
+  text-align: center;
+  flex: 1;
+}
+.step-num {
+  width: 28pt;
+  height: 28pt;
+  background: #10B981;
+  border-radius: 50%;
+  margin: 0 auto 8pt auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.step-num p {
+  font-size: 12pt;
+  color: #ffffff;
+  font-weight: bold;
+  margin: 0;
+}
+.step h4 {
+  font-size: 10pt;
+  color: #ffffff;
+  margin: 0 0 4pt 0;
+}
+.step p {
+  font-size: 7pt;
+  color: #94A3B8;
+  margin: 0;
+}
+.arrow {
+  color: #10B981;
+  font-size: 16pt;
+  padding: 0 4pt;
+}
+.arrow p {
+  margin: 0;
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>솔루션 개요 (Solution Overview)</h1>
+</div>
+<div class="content">
+  <div class="architecture">
+    <div class="arch-box">
+      <div class="arch-title">
+        <div class="arch-icon"><p>UI</p></div>
+        <h3>사용자 인터페이스</h3>
+      </div>
+      <div class="arch-item"><p>음성 파일 업로드</p></div>
+      <div class="arch-item"><p>가족 성문 등록</p></div>
+      <div class="arch-item"><p>분석 결과 대시보드</p></div>
+    </div>
+    <div class="arch-box green">
+      <div class="arch-title">
+        <div class="arch-icon green"><p>AI</p></div>
+        <h3>AI 분석 엔진</h3>
+      </div>
+      <div class="arch-item"><p>딥페이크 탐지 (Wav2Vec2)</p></div>
+      <div class="arch-item"><p>성문 대조 (ECAPA-TDNN)</p></div>
+      <div class="arch-item"><p>종합 위험도 판정</p></div>
+    </div>
+    <div class="arch-box purple">
+      <div class="arch-title">
+        <div class="arch-icon purple"><p>DB</p></div>
+        <h3>데이터 저장소</h3>
+      </div>
+      <div class="arch-item"><p>가족 성문 DB (암호화)</p></div>
+      <div class="arch-item"><p>분석 이력 로그</p></div>
+      <div class="arch-item"><p>가족 암호 관리</p></div>
+    </div>
+  </div>
+  <div class="flow-section">
+    <h3>이중 검증 프로세스</h3>
+    <div class="flow-steps">
+      <div class="step">
+        <div class="step-num"><p>1</p></div>
+        <h4>성문 등록</h4>
+        <p>가족 음성 사전 등록</p>
+      </div>
+      <div class="arrow"><p>→</p></div>
+      <div class="step">
+        <div class="step-num"><p>2</p></div>
+        <h4>음성 업로드</h4>
+        <p>의심 음성 파일 업로드</p>
+      </div>
+      <div class="arrow"><p>→</p></div>
+      <div class="step">
+        <div class="step-num"><p>3</p></div>
+        <h4>AI 분석</h4>
+        <p>딥페이크 + 성문 검증</p>
+      </div>
+      <div class="arrow"><p>→</p></div>
+      <div class="step">
+        <div class="step-num"><p>4</p></div>
+        <h4>결과 확인</h4>
+        <p>위험도 리포트 제공</p>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
