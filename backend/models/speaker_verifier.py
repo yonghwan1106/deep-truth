@@ -20,11 +20,12 @@ class SpeakerVerifier:
     API 토큰이 없는 경우 목업 모드로 동작합니다.
     """
 
-    # HuggingFace Serverless Inference API 엔드포인트
-    API_BASE_URL = "https://api-inference.huggingface.co/models"
+    # HuggingFace Dedicated Inference Endpoint
+    # Saire2023/wav2vec2-base-finetuned-Speaker-Classification 모델 배포
+    ENDPOINT_URL = "https://dwit68a7bkrnbukk.us-east-1.aws.endpoints.huggingface.cloud"
 
-    # 화자 검증용 모델 (speaker-embedding)
-    SPEAKER_MODEL = "speechbrain/spkrec-ecapa-voxceleb"
+    # 화자 검증용 모델 (speaker-classification)
+    SPEAKER_MODEL = "Saire2023/wav2vec2-base-finetuned-Speaker-Classification"
 
     def __init__(self, api_token: Optional[str] = None):
         """
@@ -87,7 +88,7 @@ class SpeakerVerifier:
         Returns:
             임베딩 벡터 (리스트) 또는 None
         """
-        api_url = f"{self.API_BASE_URL}/{self.SPEAKER_MODEL}"
+        api_url = self.ENDPOINT_URL
 
         try:
             async with aiohttp.ClientSession() as session:

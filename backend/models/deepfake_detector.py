@@ -18,12 +18,12 @@ class DeepfakeDetector:
     API 토큰이 없는 경우 목업 모드로 동작합니다.
     """
 
-    # HuggingFace Serverless Inference API 엔드포인트
-    API_BASE_URL = "https://api-inference.huggingface.co/models"
+    # HuggingFace Dedicated Inference Endpoint
+    # MelodyMachine/Deepfake-audio-detection-V2 모델 배포
+    ENDPOINT_URL = "https://d5lc45iws9kwmc8t.us-east-1.aws.endpoints.huggingface.cloud"
 
     # 딥페이크 탐지용 모델 (audio-classification)
-    # wav2vec2 기반 음성 특징 분석
-    DEEPFAKE_MODEL = "facebook/wav2vec2-base-960h"
+    DEEPFAKE_MODEL = "MelodyMachine/Deepfake-audio-detection-V2"
 
     def __init__(self, api_token: Optional[str] = None):
         """
@@ -60,7 +60,7 @@ class DeepfakeDetector:
         Returns:
             분석 결과 딕셔너리
         """
-        api_url = f"{self.API_BASE_URL}/{self.DEEPFAKE_MODEL}"
+        api_url = self.ENDPOINT_URL
 
         try:
             async with aiohttp.ClientSession() as session:
