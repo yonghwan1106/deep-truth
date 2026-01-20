@@ -127,10 +127,16 @@ class SpeakerVerifier:
         if isinstance(result, list):
             # 이미 리스트 형태의 임베딩
             if len(result) > 0:
+                # 분류 결과 (dict 리스트)인 경우 - 임베딩이 아님
+                if isinstance(result[0], dict):
+                    print(f"[SpeakerVerifier] 분류 결과 반환됨 (임베딩 아님): {result}")
+                    return None
                 # 중첩 리스트인 경우 평탄화
                 if isinstance(result[0], list):
                     return result[0]
-                return result
+                # float 리스트인 경우 (실제 임베딩)
+                if isinstance(result[0], (int, float)):
+                    return result
 
         elif isinstance(result, dict):
             # embeddings 키가 있는 경우
