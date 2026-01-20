@@ -44,7 +44,10 @@ class DeepfakeDetector:
     @property
     def headers(self) -> Dict[str, str]:
         """API 요청 헤더"""
-        return {"Authorization": f"Bearer {self.api_token}"}
+        return {
+            "Authorization": f"Bearer {self.api_token}",
+            "Content-Type": "audio/wav"
+        }
 
     def load_model(self):
         """모델 로딩 (API 모드에서는 실제 로딩 불필요)"""

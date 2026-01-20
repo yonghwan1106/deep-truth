@@ -52,7 +52,10 @@ class SpeakerVerifier:
     @property
     def headers(self) -> Dict[str, str]:
         """API 요청 헤더"""
-        return {"Authorization": f"Bearer {self.api_token}"}
+        return {
+            "Authorization": f"Bearer {self.api_token}",
+            "Content-Type": "audio/wav"
+        }
 
     def _init_mock_voiceprints(self):
         """목업 성문 데이터 초기화"""
