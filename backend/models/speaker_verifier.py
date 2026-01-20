@@ -51,11 +51,8 @@ class SpeakerVerifier:
 
     @property
     def headers(self) -> Dict[str, str]:
-        """API 요청 헤더"""
-        return {
-            "Authorization": f"Bearer {self.api_token}",
-            "Content-Type": "audio/wav"
-        }
+        """API 요청 헤더 (Authorization만)"""
+        return {"Authorization": f"Bearer {self.api_token}"}
 
     def _init_mock_voiceprints(self):
         """목업 성문 데이터 초기화"""
@@ -95,9 +92,14 @@ class SpeakerVerifier:
 
         try:
             async with aiohttp.ClientSession() as session:
+                # Content-Type을 명시적으로 설정
+                headers = {
+                    "Authorization": f"Bearer {self.api_token}",
+                    "Content-Type": "audio/wav"
+                }
                 async with session.post(
                     api_url,
-                    headers=self.headers,
+                    headers=headers,
                     data=audio_bytes,
                     timeout=aiohttp.ClientTimeout(total=30)
                 ) as response:
