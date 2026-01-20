@@ -18,12 +18,12 @@ class DeepfakeDetector:
     API 토큰이 없는 경우 목업 모드로 동작합니다.
     """
 
-    # HuggingFace Inference API 엔드포인트 (2024년 이후 새 URL)
-    API_BASE_URL = "https://router.huggingface.co/hf"
+    # HuggingFace Serverless Inference API 엔드포인트
+    API_BASE_URL = "https://api-inference.huggingface.co/models"
 
     # 딥페이크 탐지용 모델 (audio-classification)
     # wav2vec2 기반 음성 특징 분석
-    DEEPFAKE_MODEL = "facebook/wav2vec2-large-960h"
+    DEEPFAKE_MODEL = "facebook/wav2vec2-base-960h"
 
     def __init__(self, api_token: Optional[str] = None):
         """
