@@ -9,7 +9,7 @@ Deep Truth (딥 트루스) - AI 딥페이크 음성 탐지 + 가족 성문 대�
 **공모전**: 피싱·스캠 예방을 위한 서비스 개발 경진대회 (데이콘)
 **마감일**: 2026.02.11 오전 10:00
 
-**현재 상태**: 목업 모드 (랜덤 값 반환). HuggingFace Inference API로 실제 AI 기능 활성화 예정.
+**현재 상태**: HuggingFace Dedicated Inference Endpoints 연동 진행 중 (API 인증 디버깅 필요)
 
 ## Deployment URLs
 
@@ -17,6 +17,29 @@ Deep Truth (딥 트루스) - AI 딥페이크 음성 탐지 + 가족 성문 대�
 - **Backend**: https://deep-truth-production.up.railway.app (Railway)
 - **API Docs**: https://deep-truth-production.up.railway.app/docs
 - **GitHub**: https://github.com/yonghwan1106/deep-truth
+
+## HuggingFace Inference Endpoints (2026-01-21 설정)
+
+### 결제 정보
+- **크레딧**: $20 충전 완료
+- **예상 사용 시간**: ~149시간 (두 Endpoint 합산 $0.134/hr)
+
+### Dedicated Endpoints
+
+| 용도 | 모델 | Endpoint URL | 비용 |
+|-----|------|--------------|------|
+| **딥페이크 탐지** | MelodyMachine/Deepfake-audio-detection-V2 | `https://d5lc45iws9kwmc8t.us-east-1.aws.endpoints.huggingface.cloud` | $0.067/hr |
+| **화자 검증** | Saire2023/wav2vec2-base-finetuned-Speaker-Classification | `https://dwit68a7bkrnbukk.us-east-1.aws.endpoints.huggingface.cloud` | $0.067/hr |
+
+### Endpoint 설정
+- **Instance**: Intel Sapphire Rapids 2x vCPUs, 4GB
+- **Region**: AWS us-east-1 (N. Virginia)
+- **Authentication**: Authenticated (HuggingFace 토큰 필요)
+- **Autoscaling**: Scale-to-zero after 60 min (비용 절감)
+
+### 남은 작업
+- [ ] Railway ↔ Endpoint 인증 연동 디버깅 (Playground 테스트 후 진행)
+- [ ] 실제 AI 분석 결과 확인
 
 ## Development Commands
 
@@ -40,23 +63,23 @@ python main.py                     # 직접 실행
 ## Architecture
 
 ```
-프론트엔드 (Vercel)          백엔드 (Railway)           외부 AI API
-     │                            │                        │
-     │  fetch API                 │    HuggingFace API     │
-     └──────────────────────────→ FastAPI ───────────────→ │
-                                   │                        │
-                     ┌─────────────┼─────────────┐          │
-                     │             │             │          │
-                  /analyze    /voiceprint   /family-code    │
-                     │             │             │          │
-                     ▼             ▼             │          │
-              ┌──────────────────────┐           │          │
-              │  HuggingFace API     │           │          │
-              │  (Inference API)     │◀──────────┼──────────┘
-              ├──────────────────────┤
-              │ • Wav2Vec2 (딥페이크)│
-              │ • ECAPA-TDNN (화자)  │
-              └──────────────────────┘
+프론트엔드 (Vercel)          백엔드 (Railway)           HuggingFace Endpoints
+     │                            │                              │
+     │  fetch API                 │    Dedicated Endpoints       │
+     └──────────────────────────→ FastAPI ─────────────────────→ │
+                                   │                              │
+                     ┌─────────────┼─────────────┐                │
+                     │             │             │                │
+                  /analyze    /voiceprint   /family-code          │
+                     │             │             │                │
+                     ▼             ▼             │                │
+              ┌─────────────────────────────────────────┐         │
+              │  HuggingFace Dedicated Endpoints        │         │
+              │  (유료 - $0.134/hr)                     │◀────────┘
+              ├─────────────────────────────────────────┤
+              │ • Deepfake-audio-detection-V2 (딥페이크)│
+              │ • wav2vec2-Speaker-Classification (화자)│
+              └─────────────────────────────────────────┘
 ```
 
 ### Backend Structure
@@ -76,65 +99,27 @@ python main.py                     # 직접 실행
 |--------|----------|-------------|
 | POST | `/api/analyze/` | 음성 분석 (딥페이크 + 성문) |
 | POST | `/api/analyze/quick` | 빠른 딥페이크 분석 |
+| GET | `/api/analyze/status` | AI 모델 상태 확인 |
 | POST | `/api/voiceprint/register` | 성문 등록 |
 | GET | `/api/voiceprint/list` | 성문 목록 |
 | POST | `/api/family-code/register` | 가족 암호 등록 |
 | POST | `/api/family-code/verify` | 가족 암호 검증 |
 | GET | `/api/history` | 분석 이력 |
 
-## Implementing Real AI Features (HuggingFace Inference API)
+## AI 모델 현황 (2026-01-21 업데이트)
 
-**Railway 업그레이드 없이** HuggingFace Inference API를 사용하여 실제 AI 기능 활성화.
+### 모델 변경 이력
 
-### Step 1: HuggingFace API 토큰 발급
-1. https://huggingface.co/settings/tokens 에서 토큰 생성
-2. `backend/.env`에 추가: `HUGGINGFACE_API_TOKEN=hf_xxxxx`
+| 항목 | 기존 (제안서) | 현재 (실제 배포) | 변경 이유 |
+|-----|--------------|------------------|----------|
+| 딥페이크 탐지 | Wav2Vec2 (ASR) | Deepfake-audio-detection-V2 | 실제 딥페이크 탐지용 fine-tuned 모델 |
+| 화자 검증 | ECAPA-TDNN (SpeechBrain) | wav2vec2-Speaker-Classification | Inference Endpoint handler.py 호환성 |
 
-### Step 2: 백엔드 코드 수정
-
-#### requirements.txt 추가
-```
-requests==2.31.0
-aiohttp==3.9.1
-```
-
-#### models/deepfake_detector.py 수정
-```python
-import aiohttp
-import os
-
-HUGGINGFACE_API_URL = "https://api-inference.huggingface.co/models/facebook/wav2vec2-base"
-HUGGINGFACE_TOKEN = os.getenv("HUGGINGFACE_API_TOKEN")
-
-async def detect_deepfake(audio_bytes: bytes) -> dict:
-    headers = {"Authorization": f"Bearer {HUGGINGFACE_TOKEN}"}
-    async with aiohttp.ClientSession() as session:
-        async with session.post(HUGGINGFACE_API_URL, headers=headers, data=audio_bytes) as response:
-            result = await response.json()
-            # 결과 파싱 및 반환
-            return {"deepfake_probability": parse_result(result)}
-```
-
-#### models/speaker_verifier.py 수정
-```python
-# speechbrain/spkrec-ecapa-voxceleb 모델 사용
-SPEAKER_MODEL_URL = "https://api-inference.huggingface.co/models/speechbrain/spkrec-ecapa-voxceleb"
-```
-
-### Step 3: Railway 환경변수 설정
-Railway 대시보드 → Variables 탭에서 `HUGGINGFACE_API_TOKEN` 추가
-
-### 사용 가능한 HuggingFace 모델
-| 용도 | 모델 | URL |
-|------|------|-----|
-| 딥페이크 탐지 | wav2vec2-base | `facebook/wav2vec2-base` |
-| 화자 검증 | ECAPA-TDNN | `speechbrain/spkrec-ecapa-voxceleb` |
-| 음성 분류 | wav2vec2-large | `facebook/wav2vec2-large-960h` |
-
-### HuggingFace Inference API 제한
-- **무료 티어**: 월 30,000 요청
-- **Rate Limit**: 분당 ~30 요청
-- **응답 시간**: 1-5초 (모델에 따라 다름)
+### 기술 스택
+- **딥페이크 탐지**: MelodyMachine/Deepfake-audio-detection-V2 (Wav2Vec2 기반)
+- **화자 검증**: Saire2023/wav2vec2-base-finetuned-Speaker-Classification
+- **프레임워크**: Transformers + PyTorch
+- **인프라**: HuggingFace Dedicated Inference Endpoints (CPU)
 
 ## Git Workflow
 
@@ -155,17 +140,25 @@ git push origin master
 기본값: `https://deep-truth-production.up.railway.app/api`
 로컬 개발시: `http://localhost:8000/api`
 
-### Backend
-- `HUGGINGFACE_API_TOKEN` - HuggingFace API 토큰 (필수)
+### Backend (Railway)
+- `HUGGINGFACE_API_TOKEN` - HuggingFace API 토큰 (필수, 설정 완료)
 - `backend/config.py`에서 설정 관리
 - `.env` 파일 지원
 
 ## 대회 제출 체크리스트
 
-- [ ] HuggingFace Inference API로 실제 AI 기능 구현
+- [x] HuggingFace $20 크레딧 충전
+- [x] Dedicated Inference Endpoints 생성 (딥페이크 + 화자)
+- [x] 백엔드 Endpoint URL 연동 코드 작성
+- [ ] Endpoint 인증 디버깅 (Playground 테스트)
+- [ ] 실제 AI 분석 테스트
 - [ ] MVP 제안서 PDF 작성 (양식에 맞게)
 - [ ] 시연 영상 제작 (5분 이내, 유튜브 업로드)
 - [ ] 데모 웹 링크 확인
 - [ ] 코드 공유 페이지에 '비공개'로 업로드
 
 **마감: 2026.02.11 오전 10:00**
+
+---
+
+*마지막 업데이트: 2026-01-21*
