@@ -21,11 +21,11 @@ class SpeakerVerifier:
     """
 
     # HuggingFace Dedicated Inference Endpoint
-    # Saire2023/wav2vec2-base-finetuned-Speaker-Classification 모델 배포
-    ENDPOINT_URL = "https://dwit68a7bkrnbukk.us-east-1.aws.endpoints.huggingface.cloud"
+    # Custom SpeechBrain ECAPA-TDNN 모델 (192차원 임베딩 반환)
+    ENDPOINT_URL = "https://t4irvwao5mfphl46.us-east-1.aws.endpoints.huggingface.cloud"
 
-    # 화자 검증용 모델 (speaker-classification)
-    SPEAKER_MODEL = "Saire2023/wav2vec2-base-finetuned-Speaker-Classification"
+    # 화자 검증용 모델 (speaker-embedding)
+    SPEAKER_MODEL = "speechbrain/spkrec-ecapa-voxceleb"
 
     def __init__(self, api_token: Optional[str] = None):
         """
@@ -123,13 +123,28 @@ class SpeakerVerifier:
 
     def _parse_embedding_result(self, result: any) -> Optional[List[float]]:
         """HuggingFace API 임베딩 응답 파싱"""
-        # SpeechBrain ECAPA-TDNN 모델은 임베딩 벡터를 반환
-        if isinstance(result, list):
+        # Custom Endpoint는 {"embedding": [...], "dimension": 192} 형식 반환
+        if isinstance(result, dict):
+            # embedding 키가 있는 경우 (Custom Endpoint)
+            if "embedding" in result:
+                embedding = result["embedding"]
+                if isinstance(embedding, list) and len(embedding) > 0:
+                    print(f"[SpeakerVerifier] 임베딩 추출 성공: {len(embedding)}차원")
+                    return embedding
+            # embeddings 키가 있는 경우 (기존 호환)
+            if "embeddings" in result:
+                return result["embeddings"]
+            # 에러가 있는 경우
+            if "error" in result:
+                print(f"[SpeakerVerifier] API 에러: {result['error']}")
+                return None
+
+        elif isinstance(result, list):
             # 이미 리스트 형태의 임베딩
             if len(result) > 0:
                 # 분류 결과 (dict 리스트)인 경우 - 임베딩이 아님
                 if isinstance(result[0], dict):
-                    print(f"[SpeakerVerifier] 분류 결과 반환됨 (임베딩 아님): {result}")
+                    print(f"[SpeakerVerifier] 분류 결과 반환됨 (임베딩 아님)")
                     return None
                 # 중첩 리스트인 경우 평탄화
                 if isinstance(result[0], list):
@@ -137,11 +152,6 @@ class SpeakerVerifier:
                 # float 리스트인 경우 (실제 임베딩)
                 if isinstance(result[0], (int, float)):
                     return result
-
-        elif isinstance(result, dict):
-            # embeddings 키가 있는 경우
-            if "embeddings" in result:
-                return result["embeddings"]
 
         return None
 
