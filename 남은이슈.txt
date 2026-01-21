@@ -1,0 +1,21 @@
+  ✅ 해결된 이슈 (2026-01-21)
+
+  Railway ↔ HuggingFace Endpoint 인증 문제 [해결됨]
+  - 원인: 잘못된 API 토큰 + 화자 검증 모델이 임베딩이 아닌 분류 결과 반환
+  - 해결:
+    1. Content-Type: audio/wav 헤더 추가
+    2. Custom ECAPA-TDNN Endpoint 생성 (sanoramyun8/speaker-embedding-endpoint)
+    3. 새 HuggingFace Write 토큰으로 교체
+    4. Railway CLI로 환경변수 직접 업데이트
+
+  현재 상태:
+  - 딥페이크 탐지: API 모드 작동
+  - 화자 검증: API 모드 작동 (192차원 임베딩 추출 성공)
+
+  📋 남은 작업
+
+  1. 시연 영상 제작 - 5분 이내, 유튜브 업로드
+  2. 코드 공유 페이지 업로드 - 비공개로 설정
+  3. 최종 테스트 및 제출
+
+  마감: 2026.02.11 오전 10:00

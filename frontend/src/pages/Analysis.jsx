@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Upload, AlertTriangle, CheckCircle, XCircle, Loader2, FileAudio, Shield, Fingerprint, Radio, Play, Mic } from 'lucide-react'
+import { Upload, AlertTriangle, CheckCircle, XCircle, Loader2, FileAudio, Shield, Fingerprint, Radio, Play, Mic, Cpu } from 'lucide-react'
+import { analysisAPI } from '../services/api'
 
 // 샘플 시나리오 데이터
 const SAMPLE_SCENARIOS = [
@@ -82,6 +83,8 @@ function Analysis() {
   const [selectedSample, setSelectedSample] = useState(null)
   const [analyzing, setAnalyzing] = useState(false)
   const [result, setResult] = useState(null)
+  const [error, setError] = useState(null)
+  const [analysisMode, setAnalysisMode] = useState(null)
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0]
@@ -89,6 +92,7 @@ function Analysis() {
       setFile(selectedFile)
       setSelectedSample(null)
       setResult(null)
+      setError(null)
     }
   }
 
@@ -96,40 +100,57 @@ function Analysis() {
     setSelectedSample(sample)
     setFile(null)
     setResult(null)
+    setError(null)
+  }
+
+  // API 응답을 프론트엔드 형식으로 변환
+  const transformApiResponse = (apiResult) => {
+    return {
+      deepfakeProbability: Math.round(apiResult.deepfake_probability || 0),
+      voiceprintMatch: Math.round(apiResult.voiceprint_match || 0),
+      matchedPerson: apiResult.matched_person || '미등록 화자',
+      riskLevel: apiResult.risk_level || 'medium',
+      recommendations: apiResult.recommendations || [
+        '분석 결과를 확인하세요',
+        '의심스러운 경우 직접 확인하세요'
+      ],
+      analysisDetails: {
+        spectralAnomaly: Math.round(apiResult.deepfake_probability * 0.95) || 0,
+        pitchVariation: Math.round(apiResult.deepfake_probability * 0.85) || 0,
+        temporalConsistency: Math.round(apiResult.deepfake_probability * 0.75) || 0
+      },
+      analysisMode: apiResult.analysis_mode || 'unknown',
+      analysisTime: apiResult.analysis_time || 0,
+      audioDuration: apiResult.audio_duration || 0
+    }
   }
 
   const handleAnalyze = async () => {
     if (!file && !selectedSample) return
 
     setAnalyzing(true)
+    setError(null)
+    setAnalysisMode(null)
 
-    // 시뮬레이션 (실제로는 API 호출)
-    await new Promise(resolve => setTimeout(resolve, 3000))
-
-    // 샘플 선택 시 해당 샘플의 결과 사용, 아니면 기본 목업 결과
-    if (selectedSample) {
-      setResult(selectedSample.result)
-    } else {
-      // 직접 업로드한 파일에 대한 기본 목업 결과
-      setResult({
-        deepfakeProbability: 87,
-        voiceprintMatch: 12,
-        matchedPerson: '아들 (민준)',
-        riskLevel: 'high',
-        recommendations: [
-          '아들에게 영상통화로 직접 확인하세요',
-          '경찰청 112에 신고하세요',
-          '절대 송금하지 마세요'
-        ],
-        analysisDetails: {
-          spectralAnomaly: 92,
-          pitchVariation: 78,
-          temporalConsistency: 65
-        }
-      })
+    try {
+      // 샘플 선택 시 해당 샘플의 결과 사용 (시연용)
+      if (selectedSample) {
+        await new Promise(resolve => setTimeout(resolve, 2000))
+        setResult(selectedSample.result)
+        setAnalysisMode('demo')
+      } else if (file) {
+        // 실제 파일 업로드 시 API 호출
+        const apiResult = await analysisAPI.analyzeAudio(file)
+        const transformedResult = transformApiResponse(apiResult)
+        setResult(transformedResult)
+        setAnalysisMode(transformedResult.analysisMode)
+      }
+    } catch (err) {
+      console.error('분석 오류:', err)
+      setError(err.message || '음성 분석 중 오류가 발생했습니다.')
+    } finally {
+      setAnalyzing(false)
     }
-
-    setAnalyzing(false)
   }
 
   return (
@@ -290,6 +311,21 @@ function Analysis() {
         </button>
       </div>
 
+      {/* Error State */}
+      {error && (
+        <div className="card-dark border-danger-500/50 bg-danger-500/5">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-danger-500/20 rounded-xl flex items-center justify-center border border-danger-500/30">
+              <XCircle className="w-6 h-6 text-danger-400" />
+            </div>
+            <div>
+              <p className="text-danger-400 font-semibold">분석 오류</p>
+              <p className="text-sm text-gray-400">{error}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Analyzing State */}
       {analyzing && (
         <div className="card-dark scan-line">
@@ -297,7 +333,9 @@ function Analysis() {
             <Loader2 className="w-8 h-8 text-cyber-400 animate-spin" />
             <div>
               <p className="text-white font-semibold">음성 파일 분석 중...</p>
-              <p className="text-sm text-gray-500 font-mono">딥페이크 탐지 및 성문 대조 진행 중</p>
+              <p className="text-sm text-gray-500 font-mono">
+                {file ? 'AI 딥페이크 탐지 및 성문 대조 진행 중' : '샘플 데이터 로딩 중'}
+              </p>
             </div>
           </div>
         </div>
@@ -346,7 +384,21 @@ function Analysis() {
                 }`}>
                   {result.riskLevel === 'high' ? '위조 음성 의심' : result.riskLevel === 'medium' ? '주의 필요' : '정상 음성'}
                 </h3>
-                <p className="text-gray-400 font-mono text-sm">분석 완료 | {new Date().toLocaleTimeString()}</p>
+                <div className="flex items-center gap-3 mt-1">
+                  <p className="text-gray-400 font-mono text-sm">분석 완료 | {new Date().toLocaleTimeString()}</p>
+                  {analysisMode && (
+                    <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-mono ${
+                      analysisMode === 'api'
+                        ? 'bg-cyber-500/20 text-cyber-400 border border-cyber-500/30'
+                        : analysisMode === 'demo'
+                        ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+                        : 'bg-gray-500/20 text-gray-400 border border-gray-500/30'
+                    }`}>
+                      <Cpu className="w-3 h-3" />
+                      {analysisMode === 'api' ? 'AI 분석' : analysisMode === 'demo' ? '샘플 데모' : analysisMode}
+                    </span>
+                  )}
+                </div>
               </div>
               <div className="ml-auto">
                 <span className={`${

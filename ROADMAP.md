@@ -22,13 +22,13 @@
 - **API Docs**: https://deep-truth-production.up.railway.app/docs
 - **플랫폼**: Railway (Hobby Plan - $5/월)
 - **기술스택**: FastAPI + Python 3.11
-- **상태**: HuggingFace Endpoints 연동 중 (인증 디버깅 필요)
+- **상태**: ✅ HuggingFace Endpoints 연동 완료 (실제 AI 분석 작동)
 
-### HuggingFace Inference Endpoints ✅ (신규)
+### HuggingFace Inference Endpoints ✅
 - **크레딧**: $20 충전 완료
-- **딥페이크 탐지**: `https://d5lc45iws9kwmc8t.us-east-1.aws.endpoints.huggingface.cloud`
-- **화자 검증**: `https://dwit68a7bkrnbukk.us-east-1.aws.endpoints.huggingface.cloud`
-- **상태**: Running (인증 연동 디버깅 필요)
+- **딥페이크 탐지**: `https://d5lc45iws9kwmc8t.us-east-1.aws.endpoints.huggingface.cloud` ✅ 작동
+- **화자 검증**: `https://t4irvwao5mfphl46.us-east-1.aws.endpoints.huggingface.cloud` ✅ 작동 (Custom ECAPA-TDNN)
+- **상태**: ✅ 완전 작동 (API 인증 완료)
 
 ### GitHub 저장소
 - **URL**: https://github.com/yonghwan1106/deep-truth
@@ -54,10 +54,10 @@
 
 ### 기술 구현
 - [x] **HuggingFace Dedicated Endpoints 생성** (딥페이크 탐지)
-- [x] **HuggingFace Dedicated Endpoints 생성** (화자 검증)
+- [x] **HuggingFace Dedicated Endpoints 생성** (화자 검증 - Custom ECAPA-TDNN)
 - [x] **백엔드 Endpoint URL 연동 코드**
-- [ ] **Endpoint 인증 디버깅** (Playground 테스트 후)
-- [ ] **실제 음성 분석 테스트**
+- [x] **Endpoint 인증 디버깅 완료**
+- [x] **실제 음성 분석 테스트 완료** (딥페이크 + 화자 검증 모두 API 모드)
 
 ---
 
@@ -110,24 +110,25 @@
 #### 화자 검증
 | 후보 | 결과 | 이유 |
 |-----|------|------|
-| speechbrain/spkrec-ecapa-voxceleb | ❌ | handler.py 없음 (Endpoint 배포 불가) |
+| speechbrain/spkrec-ecapa-voxceleb | ❌ → ✅ | handler.py 없음 → **Custom handler.py 작성하여 해결** |
 | nvidia/speakerverification_en_titanet_large | ❌ | NeMo 프레임워크 (Transformers 호환 안됨) |
 | microsoft/wavlm-base-plus-sv | ❌ | handler.py 없음 |
-| **Saire2023/wav2vec2-base-finetuned-Speaker-Classification** | ✅ 선정 | Transformers 호환, Endpoint 배포 가능 |
+| Saire2023/wav2vec2-base-finetuned-Speaker-Classification | ❌ | 분류 결과 반환 (임베딩 아님) |
+| **sanoramyun8/speaker-embedding-endpoint** | ✅ 최종 선정 | Custom ECAPA-TDNN, 192차원 임베딩 |
 
 ### 최종 기술 스택
 
-| 용도 | 모델 | 아키텍처 | 크기 |
+| 용도 | 모델 | 아키텍처 | 출력 |
 |-----|------|---------|------|
-| 딥페이크 탐지 | MelodyMachine/Deepfake-audio-detection-V2 | Wav2Vec2 | 94.6MB |
-| 화자 검증 | Saire2023/wav2vec2-base-finetuned-Speaker-Classification | Wav2Vec2 | 94.6MB |
+| 딥페이크 탐지 | MelodyMachine/Deepfake-audio-detection-V2 | Wav2Vec2 | 분류 (real/fake) |
+| 화자 검증 | sanoramyun8/speaker-embedding-endpoint | ECAPA-TDNN (SpeechBrain) | 192차원 임베딩 |
 
 ### 제안서 대비 변경사항
 
 | 항목 | 제안서 | 실제 배포 | 호환성 |
 |-----|--------|----------|--------|
 | 딥페이크 탐지 | Wav2Vec2 기반 | Wav2Vec2 기반 (fine-tuned) | ✅ 일치 |
-| 화자 검증 | ECAPA-TDNN | Wav2Vec2 기반 | ⚠️ 아키텍처 변경 (기능 동일) |
+| 화자 검증 | ECAPA-TDNN | **ECAPA-TDNN (Custom Endpoint)** | ✅ 일치 (제안서와 동일 모델)
 
 ---
 
@@ -151,23 +152,20 @@
 ## 📅 개발 일정
 
 ```
-2026-01-21 (현재)
+2026-01-21 (완료)
     │
     ├─ [완료] HuggingFace $20 크레딧 충전
     ├─ [완료] Dedicated Endpoints 생성 (딥페이크 + 화자)
     ├─ [완료] 백엔드 Endpoint URL 연동 코드
+    ├─ [완료] Custom ECAPA-TDNN Endpoint 생성
+    ├─ [완료] Endpoint 인증 디버깅
+    ├─ [완료] 실제 AI 분석 테스트
     │
     ▼
-[다음 작업] Endpoint 인증 디버깅 (Playground 테스트)
+[다음 작업] 시연 영상 제작 (5분 이내)
     │
     ▼
-[다음 작업] 실제 AI 분석 테스트
-    │
-    ▼
-[필수] MVP 제안서 PDF 최종 검토
-    │
-    ▼
-[필수] 시연 영상 제작
+[다음 작업] 코드 공유 페이지 업로드
     │
     ▼
 [필수] 최종 테스트 + 제출
@@ -182,10 +180,8 @@
 
 ## 다음 작업 (TODO)
 
-1. **Endpoint 인증 디버깅** - HuggingFace Playground에서 테스트 후 Railway 연동 확인
-2. **실제 AI 분석 테스트** - 오디오 파일 업로드 → 실제 AI 결과 확인
-3. **MVP 제안서 PDF 최종 검토**
-4. **시연 영상 제작**
+1. **시연 영상 제작** - 5분 이내, 유튜브 업로드
+2. **코드 공유 페이지 업로드** - 비공개로 설정
 
 ---
 
@@ -199,10 +195,14 @@
 | 2026-01-18 | ⚠️ HuggingFace 무료 Inference API 종료 확인 |
 | 2026-01-20 | MVP 제안서 작성 (HTML/MD), 본선 Q&A 스크립트 작성 |
 | 2026-01-20 | AI 모델 로드맵 추가 (AASIST, SASV) |
-| **2026-01-21** | **HuggingFace $20 크레딧 충전** |
-| **2026-01-21** | **Dedicated Inference Endpoints 생성 (딥페이크 + 화자)** |
-| **2026-01-21** | **백엔드 Endpoint URL 연동 코드 작성** |
-| **2026-01-21** | **Endpoint 인증 디버깅 필요 (진행 중)** |
+| 2026-01-21 | HuggingFace $20 크레딧 충전 |
+| 2026-01-21 | Dedicated Inference Endpoints 생성 (딥페이크) |
+| 2026-01-21 | Content-Type 헤더 추가 (deepfake_detector.py, speaker_verifier.py) |
+| 2026-01-21 | 화자 분류 모델 → Custom ECAPA-TDNN 임베딩 Endpoint로 변경 |
+| **2026-01-21** | **Custom handler.py 작성 (sanoramyun8/speaker-embedding-endpoint)** |
+| **2026-01-21** | **새 HuggingFace Write 토큰 생성** |
+| **2026-01-21** | **Railway 환경변수 업데이트 (CLI 직접 설정)** |
+| **2026-01-21** | **✅ 딥페이크 탐지 + 화자 검증 모두 API 모드 작동 확인** |
 
 ---
 
