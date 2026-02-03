@@ -110,6 +110,10 @@ class DeepfakeDetector:
         실제 프로덕션에서는 ASVspoof 데이터셋으로 fine-tuned된
         전용 딥페이크 탐지 모델을 사용해야 합니다.
         """
+        # 디버그: 실제 API 응답 출력
+        print(f"[DeepfakeDetector] 🔍 Raw API Response: {result}")
+        print(f"[DeepfakeDetector] 🔍 Response Type: {type(result)}")
+        
         # wav2vec2 결과는 텍스트 또는 음성 특징
         if isinstance(result, dict):
             if "text" in result:
